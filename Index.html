@@ -1,1 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SV-SISTEMA</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom, #fffaf0, #ffe);
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      min-height: 100vh;
+      overflow-y: auto;
+      margin: 0;
+      transition: background 0.5s ease;
+    }
 
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      align-items: center;
+      width: 100%;
+      max-width: 320px;
+      padding: 20px 0;
+    }
+
+    .alert {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      transition: transform 0.2s ease;
+      color: black;
+      font-weight: bold;
+      font-size: 28px;
+      width: 100%;
+    }
+
+    .alert:hover {
+      transform: scale(1.05);
+    }
+
+    .symbol {
+      font-size: 48px;
+      user-select: none;
+    }
+
+    .centrado {
+      text-align: center;
+    }
+
+    #message {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      border-radius: 15px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 12px;
+      max-width: 130px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      color: #333;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: opacity 0.5s ease, transform 0.5s ease, background 0.5s ease;
+      text-align: center;
+    }
+
+    #message.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    #message.hide {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="alert" onclick="activateAlert('♡', 'Hay movimiento familiar en la zona, mantente tranquilo y alerta.', '#ffe6f0', '#ffccd9');">
+      <div class="symbol">♡</div>
+      <div class="centrado">Actividad familiar</div>
+    </div>
+    <div class="alert" onclick="activateAlert('✩', 'Atención a novedades, revisa tus alrededores con calma.', '#fffacc', '#fff099');">
+      <div class="symbol">✩</div>
+      <div class="centrado">Aviso importante</div>
+    </div>
+    <div class="alert" onclick="activateAlert('✵', 'Se realizan tareas de mantenimiento, no hay por qué alarmarse.', '#fff2cc', '#ffe066');">
+      <div class="symbol">✵</div>
+      <div class="centrado">Mantenimiento solar</div>
+    </div>
+    <div class="alert" onclick="activateAlert('☾', 'Cuida tus movimientos esta noche, mantén la serenidad.', '#f0e6ff', '#d9ccff');">
+      <div class="symbol">☾</div>
+      <div class="centrado">Alerta nocturna</div>
+    </div>
+    <div class="alert" onclick="activateAlert('☁', 'Cambio climático suave, sigue recomendaciones básicas.', '#e6f0ff', '#cce0ff');">
+      <div class="symbol">☁</div>
+      <div class="centrado">Alerta climática</div>
+    </div>
+  </div>
+
+  <div id="message"></div>
+
+  <audio id="alarm-sound" preload="auto">
+    <source src="https://actions.google.com/sounds/v1/alarms/bell_ring.ogg" type="audio/ogg" />
+    <source src="https://actions.google.com/sounds/v1/alarms/bell_ring.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+    let messageTimeout;
+
+    function activateAlert(symbol, messageText, bodyColor, messageColor) {
+      if (confirm(`¿Deseas activar la alerta ${symbol}?`)) {
+        const message = document.getElementById('message');
+        clearTimeout(messageTimeout);
+
+        message.textContent = messageText;
+        message.style.background = messageColor;
+        message.classList.remove('hide');
+        message.classList.add('show');
+
+        document.body.style.background = bodyColor;
+
+        const alarm = document.getElementById('alarm-sound');
+        alarm.currentTime = 0;
+        alarm.play();
+
+        messageTimeout = setTimeout(() => {
+          message.classList.remove('show');
+          message.classList.add('hide');
+        }, 4500);
+      }
+    }
+  </script>
+</body>
+  </html>
